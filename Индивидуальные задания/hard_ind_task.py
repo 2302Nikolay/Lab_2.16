@@ -4,6 +4,7 @@
 import sys
 import json
 import datetime
+import jsonschema
 
 
 def add(list_man):
@@ -70,14 +71,45 @@ def select(command_d, mans_list):
 
 
 def save_workers(file_name_1, staff):
-
     with open(file_name_1, "w", encoding="utf-8") as fout:
         json.dump(staff, fout, ensure_ascii=False, indent=4, default=str)
 
 
 def load_workers(file_name_2):
+    schema = {
+        "type": "array",
+        "items": [
+            {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "number": {"type": "string"},
+                    "date": {"type": "string"},
+                },
+                "required": ["name", "number", "date"],
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "number": {"type": "string"},
+                    "date": {"type": "string"},
+                },
+                "required": ["name", "number", "date"],
+            },
+        ],
+    }
+
     with open(file_name_2, "r", encoding="utf-8") as fin:
-        return json.load(fin)
+        loadf = json.load(fin)
+        validator = jsonschema.Draft7Validator(schema)
+        try:
+            if not validator.validate(loadf):
+                print("Валидация прошла успешно")
+        except jsonschema.exceptions.ValidationError:
+            print("Ошибка валидации", file=sys.stderr)
+            exit()
+        return loadf
 
 
 def help_d():
