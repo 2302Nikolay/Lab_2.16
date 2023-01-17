@@ -3,7 +3,6 @@
 
 import sys
 import json
-import datetime
 import jsonschema
 
 
@@ -12,7 +11,6 @@ def add(list_man):
     name = input("Имя:  ")
     number = input("Номер телефона ")
     date_ = input("Дата рождения: ")
-    date_ = datetime.datetime.strptime(date_, "%Y-%m-%d").date()
 
     # Создать словарь.
     man = {
